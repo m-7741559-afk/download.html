@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财务文档管理系统 v2.0 | Financial Document System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        .language-selector {
+            text-align: right;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .lang-btn {
+            padding: 8px 15px;
+            margin: 0 5px;
+            border: 1px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .lang-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 25px 0;
+            color: #856404;
+        }
+        
+        h2 {
+            color: #3498db;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        /* 系统功能样式 */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .feature-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            align-items: flex-start;
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .feature-item h3 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .feature-item p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .download-section {
+            text-align: center;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 20px 0;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #218838;
+        }
+        
+        .file-info {
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* 安装步骤样式 */
+        .steps-container {
+            margin: 20px 0;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        
+        .step-content h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+        
+        .step-content p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .step-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .step-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* 文件结构样式 */
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .file-item {
+            margin: 8px 0;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .folder-icon {
+            color: #3498db;
+        }
+        
+        .file-icon.file {
+            color: #27ae60;
+        }
+        
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 语言选择器 -->
+        <div class="language-selector">
+            <button class="lang-btn active" onclick="changeLanguage('zh')">华语</button>
+            <button class="lang-btn" onclick="changeLanguage('en')">English</button>
+            <button class="lang-btn" onclick="changeLanguage('ms')">Bahasa Melayu</button>
+        </div>
+
+        <!-- 页面内容 -->
+        <header>
+            <h1 id="title">财务文档管理系统 v2.0</h1>
+            <p class="subtitle" id="subtitle">专业财务文档上传、管理、识别一体化解决方案</p>
+        </header>
+
+        <div class="alert">
+            <p id="importantNote"><strong>重要提示：</strong> 这不是一个直接运行的程序，需要安装后才能使用。</p>
+        </div>
+
+        <!-- 系统功能部分 -->
+        <section>
+            <h2 id="featuresTitle">系统功能</h2>
+            <div class="features">
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <div>
+                        <h3 id="feature1_title">三语界面</h3>
+                        <p id="feature1_desc">中文/英文/马来文自由切换</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <div>
+                        <h3 id="feature2_title">多格式支持</h3>
+                        <p id="feature2_desc">支持图片、PDF、Word、TXT文件</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📄</span>
+                    <div>
+                        <h3 id="feature3_title">OCR文字识别</h3>
+                        <p id="feature3_desc">自动识别图片和PDF中的文字</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🗂️</span>
+                    <div>
+                        <h3 id="feature4_title">智能文件管理</h3>
+                        <p id="feature4_desc">自动分类和整理财务文档</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 id="step1">第一步：下载安装包</h2>
+            <div class="download-section">
+                <p id="downloadDescription">点击下方按钮下载最新版本安装包</p>
+                <a href="财务文档系统.zip" class="download-btn" id="downloadButton">立即下载 (1.6MB)</a>
+                <p class="file-info" id="fileInfo">下载后将得到一个 ZIP 压缩文件</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 id="step2">🚀 第二步：安装与运行</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <h3 id="step2_1_title">解压文件</h3>
+                        <p id="step2_1_description">右键点击下载的ZIP文件 → 选择"解压到当前文件夹"</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <h3 id="step2_2_title">安装Node.js（如果还没安装）</h3>
+                        <p id="step2_2_description">访问 <a href="https://nodejs.org/" target="_blank" class="step-link" id="nodejsLink">https://nodejs.org/</a></p>
+                        <p id="step2_2_description2">下载并安装LTS版本</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <h3 id="step2_3_title">运行系统</h3>
+                        <p id="step2_3_description">进入解压后的文件夹 → 双击 <strong id="startBat">启动.bat</strong></p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <div class="step-content">
+                        <h3 id="step2_4_title">访问系统</h3>
+                        <p id="step2_4_description">打开浏览器访问：<strong id="localhostLink">http://localhost:3000</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 id="fileStructureTitle">📁 文件结构说明</h2>
+            <div class="file-structure">
+                <p id="structureDescription">解压后您会看到这些文件：</p>
+                <div class="file-item">
+                    <span class="file-icon folder-icon">📁</span>
+                    <span id="folderName">财务文档系统/</span>
+                </div>
+                <div class="file-item" style="margin-left: 20px;">
+                    <span class="file-icon file">📄</span>
+                    <span id="file1">server.js</span>
+                    <span style="color: #666; margin-left: 10px;" id="file1_desc">(主程序)</span>
+                </div>
+                <div class="file-item" style="margin-left: 20px;">
+                    <span class="file-icon file">📄</span>
+                    <span id="file2">package.json</span>
+                    <span style="color: #666; margin-left: 10px;" id="file2_desc">(配置文件)</span>
+                </div>
+                <div class="file-item" style="margin-left: 20px;">
+                    <span class="file-icon file">📄</span>
+                    <span id="file3">启动.bat</span>
+                    <span style="color: #666; margin-left: 10px;" id="file3_desc">(运行脚本)</span>
+                </div>
+                <div class="file-item" style="margin-left: 20px;">
+                    <span class="file-icon folder-icon">📁</span>
+                    <span id="folder1">public/</span>
+                    <span style="color: #666; margin-left: 10px;" id="folder1_desc">(网页界面)</span>
+                </div>
+                <div class="file-item" style="margin-left: 20px;">
+                    <span class="file-icon folder-icon">📁</span>
+                    <span id="folder2">locales/</span>
+                    <span style="color: #666; margin-left: 10px;" id="folder2_desc">(语言文件)</span>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p id="copyright">© 2026 财务文档管理系统 v2.0 | 技术支持</p>
+        </footer>
+    </div>
+
+    <script>
+        // 定义所有语言文本
+        const translations = {
+            zh: {
+                title: "财务文档管理系统 v2.0",
+                subtitle: "专业财务文档上传、管理、识别一体化解决方案",
+                importantNote: "<strong>重要提示：</strong> 这不是一个直接运行的程序，需要安装后才能使用。",
+                featuresTitle: "系统功能",
+                feature1_title: "三语界面",
+                feature1_desc: "中文/英文/马来文自由切换",
+                feature2_title: "多格式支持",
+                feature2_desc: "支持图片、PDF、Word、TXT文件",
+                feature3_title: "OCR文字识别",
+                feature3_desc: "自动识别图片和PDF中的文字",
+                feature4_title: "智能文件管理",
+                feature4_desc: "自动分类和整理财务文档",
+                step1: "第一步：下载安装包",
+                downloadDescription: "点击下方按钮下载最新版本安装包",
+                downloadButton: "立即下载 (1.6MB)",
+                fileInfo: "下载后将得到一个 ZIP 压缩文件",
+                step2: "🚀 第二步：安装与运行",
+                step2_1_title: "解压文件",
+                step2_1_description: "右键点击下载的ZIP文件 → 选择\"解压到当前文件夹\"",
+                step2_2_title: "安装Node.js（如果还没安装）",
+                step2_2_description: "访问",
+                step2_2_description2: "下载并安装LTS版本",
+                nodejsLink: "https://nodejs.org/",
+                step2_3_title: "运行系统",
+                step2_3_description: "进入解压后的文件夹 → 双击 <strong>启动.bat</strong>",
+                startBat: "启动.bat",
+                step2_4_title: "访问系统",
+                step2_4_description: "打开浏览器访问：<strong>http://localhost:3000</strong>",
+                localhostLink: "http://localhost:3000",
+                fileStructureTitle: "📁 文件结构说明",
+                structureDescription: "解压后您会看到这些文件：",
+                folderName: "财务文档系统/",
+                file1: "server.js",
+                file1_desc: "(主程序)",
+                file2: "package.json",
+                file2_desc: "(配置文件)",
+                file3: "启动.bat",
+                file3_desc: "(运行脚本)",
+                folder1: "public/",
+                folder1_desc: "(网页界面)",
+                folder2: "locales/",
+                folder2_desc: "(语言文件)",
+                copyright: "© 2026 财务文档管理系统 v2.0 | 技术支持"
+            },
+            en: {
+                title: "Financial Document Management System v2.0",
+                subtitle: "Professional solution for uploading, managing, and recognizing financial documents",
+                importantNote: "<strong>Important Note:</strong> This is not a directly executable program and requires installation.",
+                featuresTitle: "System Features",
+                feature1_title: "Tri-lingual Interface",
+                feature1_desc: "Chinese/English/Malay free switching",
+                feature2_title: "Multi-format Support",
+                feature2_desc: "Supports images, PDF, Word, TXT files",
+                feature3_title: "OCR Text Recognition",
+                feature3_desc: "Automatically recognizes text in images and PDFs",
+                feature4_title: "Smart File Management",
+                feature4_desc: "Automatic classification and organization of financial documents",
+                step1: "Step 1: Download the Installer",
+                downloadDescription: "Click the button below to download the latest version",
+                downloadButton: "Download Now (1.6MB)",
+                fileInfo: "You will receive a ZIP file after downloading",
+                step2: "🚀 Step 2: Installation & Launch",
+                step2_1_title: "Extract the files",
+                step2_1_description: "Right-click the downloaded ZIP file → Select \"Extract to current folder\"",
+                step2_2_title: "Install Node.js (if not installed)",
+                step2_2_description: "Visit",
+                step2_2_description2: "Download and install the LTS version",
+                nodejsLink: "https://nodejs.org/",
+                step2_3_title: "Run the system",
+                step2_3_description: "Enter the extracted folder → Double-click <strong>start.bat</strong>",
+                startBat: "start.bat",
+                step2_4_title: "Access the system",
+                step2_4_description: "Open browser and visit: <strong>http://localhost:3000</strong>",
+                localhostLink: "http://localhost:3000",
+                fileStructureTitle: "📁 File Structure",
+                structureDescription: "After extraction, you will see these files:",
+                folderName: "FinancialDocSystem/",
+                file1: "server.js",
+                file1_desc: "(Main program)",
+                file2: "package.json",
+                file2_desc: "(Configuration file)",
+                file3: "start.bat",
+                file3_desc: "(Run script)",
+                folder1: "public/",
+                folder1_desc: "(Web interface)",
+                folder2: "locales/",
+                folder2_desc: "(Language files)",
+                copyright: "© 2026 Financial Document System v2.0 | Technical Support"
+            },
+            ms: {
+                title: "Sistem Pengurusan Dokumen Kewangan v2.0",
+                subtitle: "Penyelesaian profesional untuk memuat naik, mengurus dan mengenal pasti dokumen kewangan",
+                importantNote: "<strong>Nota Penting:</strong> Ini bukan program yang boleh dilaksanakan secara langsung dan memerlukan pemasangan.",
+                featuresTitle: "Ciri-ciri Sistem",
+                feature1_title: "Antara Muka Tiga Bahasa",
+                feature1_desc: "Pertukaran percuma Cina/Inggeris/Melayu",
+                feature2_title: "Sokongan Pelbagai Format",
+                feature2_desc: "Menyokong imej, PDF, Word, fail TXT",
+                feature3_title: "Pengenalpastian Teks OCR",
+                feature3_desc: "Mengenal pasti teks dalam imej dan PDF secara automatik",
+                feature4_title: "Pengurusan Fail Pintar",
+                feature4_desc: "Pengelasan dan penyusunan dokumen kewangan secara automatik",
+                step1: "Langkah 1: Muat Turun Pemasang",
+                downloadDescription: "Klik butang di bawah untuk memuat turun versi terkini",
+                downloadButton: "Muat Turun Sekarang (1.6MB)",
+                fileInfo: "Anda akan menerima fail ZIP selepas muat turun",
+                step2: "🚀 Langkah 2: Pemasangan & Pelancaran",
+                step2_1_title: "Ekstrak fail",
+                step2_1_description: "Klik kanan pada fail ZIP yang dimuat turun → Pilih \"Ekstrak ke folder semasa\"",
+                step2_2_title: "Pasang Node.js (jika belum dipasang)",
+                step2_2_description: "Lawati",
+                step2_2_description2: "Muat turun dan pasang versi LTS",
+                nodejsLink: "https://nodejs.org/",
+                step2_3_title: "Jalankan sistem",
+                step2_3_description: "Masuk ke folder yang diekstrak → Dua kali klik <strong>start.bat</strong>",
+                startBat: "start.bat",
+                step2_4_title: "Akses sistem",
+                step2_4_description: "Buka pelayar dan lawati: <strong>http://localhost:3000</strong>",
+                localhostLink: "http://localhost:3000",
+                fileStructureTitle: "📁 Struktur Fail",
+                structureDescription: "Selepas pengekstrakan, anda akan melihat fail-fail ini:",
+                folderName: "SistemDokumenKewangan/",
+                file1: "server.js",
+                file1_desc: "(Program utama)",
+                file2: "package.json",
+                file2_desc: "(Fail konfigurasi)",
+                file3: "start.bat",
+                file3_desc: "(Skrip jalan)",
+                folder1: "public/",
+                folder1_desc: "(Antara muka web)",
+                folder2: "locales/",
+                folder2_desc: "(Fail bahasa)",
+                copyright: "© 2026 Sistem Dokumen Kewangan v2.0 | Sokongan Teknikal"
+            }
+        };
+
+        // 当前语言
+        let currentLang = 'zh';
+
+        // 切换语言函数
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(lang === 'zh' ? '华语' : 
+                                            lang === 'en' ? 'English' : 
+                                            'Bahasa Melayu')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // 更新所有文本
+            const texts = translations[lang];
+            for (const [key, value] of Object.entries(texts)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (key.includes('Link') || key === 'nodejsLink' || key === 'localhostLink' || key === 'startBat') {
+                        // 处理链接和特殊文本
+                        if (key === 'nodejsLink') {
+                            const link = document.querySelector('.step-link');
+                            if (link) link.href = value;
+                        }
+                        element.innerHTML = value;
+                    } else if (element.tagName === 'A' && key.includes('Link')) {
+                        // 如果是链接，只设置文本内容，不覆盖HTML
+                        element.textContent = value;
+                    } else {
+                        element.innerHTML = value;
+                    }
+                }
+            }
+            
+            // 更新下载链接语言提示
+            const downloadBtn = document.getElementById('downloadButton');
+            if (downloadBtn) {
+                downloadBtn.innerHTML = texts.downloadButton;
+            }
+            
+            // 更新页面标题
+            document.title = texts.title + " | " + 
+                           (lang === 'zh' ? '下载页面' : 
+                            lang === 'en' ? 'Download Page' : 
+                            'Halaman Muat Turun');
+        }
+
+        // 页面加载时设置默认语言
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查浏览器语言
+            const browserLang = navigator.language || navigator.userLanguage;
+            let defaultLang = 'zh';
+            
+            if (browserLang.startsWith('en')) {
+                defaultLang = 'en';
+            } else if (browserLang.startsWith('ms')) {
+                defaultLang = 'ms';
+            }
+            
+            changeLanguage(defaultLang);
+        });
+    </script>
+</body>
+</html>
